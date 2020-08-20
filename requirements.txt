@@ -1,0 +1,10 @@
+PyYAML
+fastapi
+requests
+sqlalchemy
+
+jupyter
+pytest
+pytest-coverage
+pytest-mock
+flake8
