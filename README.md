@@ -17,6 +17,13 @@ export FLASK_APP=infrastructure.web.flask.main
 flask run
 ```
 
+## run console
+```
+export PYTHONPATH=$PWD/src
+
+python src/infrastructure/console/poll.py
+```
+
 ## run test 
 ```
 export PYTHONPATH=$PWD/src 

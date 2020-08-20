@@ -1,11 +1,10 @@
 from core.use_cases import poll as use_cases
-from infrastructure.repositories.mem.poll import PollMemRepo
 
-repo = PollMemRepo()
+from infrastructure.web import repo_instances
 
 
 def list_polls():
-    uc = use_cases.PollListUseCase(repo)
+    uc = use_cases.PollListUseCase(repo_instances.mem_poll_repo)
     polls = uc.execute()
 
     print('##')
