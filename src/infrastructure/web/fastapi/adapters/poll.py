@@ -2,7 +2,7 @@ from typing import List
 from uuid import UUID
 
 from core.entities import poll as entities
-from infrastructure.web.adapters import PydanticAdapter
+from infrastructure.web.fastapi.adapters import PydanticAdapter
 
 
 class ChoiceAdapter(PydanticAdapter):

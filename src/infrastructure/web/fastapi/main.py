@@ -9,7 +9,7 @@ from core.use_cases import poll as use_cases
 from infrastructure.repositories.db import poll as db_repo
 from infrastructure.repositories.db import Base
 from infrastructure.repositories.mem import poll as mem_repo
-from infrastructure.web.adapters import poll as adapters
+from infrastructure.web.fastapi.adapters import poll as adapters
 
 app = FastAPI()
 

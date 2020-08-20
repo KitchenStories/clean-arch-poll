@@ -8,6 +8,6 @@ def sent(mocker):
 
 @fixture
 def client_app():
-    from infrastructure.web.main import app
+    from infrastructure.web.fastapi.main import app
     from fastapi.testclient import TestClient
     return TestClient(app)
