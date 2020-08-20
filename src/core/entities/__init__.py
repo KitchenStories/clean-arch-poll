@@ -7,4 +7,3 @@ class BaseEntity(metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
     def from_dict(cls, other: dict): ...
-
