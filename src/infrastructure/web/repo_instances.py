@@ -16,3 +16,6 @@ Session = sessionmaker(bind=engine)
 session = Session()
 db_choice_repo = db_repo.ChoicePSQLRepo(session)
 db_poll_repo = db_repo.PollPSQLRepo(session)
+
+choice_repo = mem_choice_repo
+poll_repo = mem_poll_repo

@@ -17,6 +17,13 @@ export FLASK_APP=infrastructure.web.flask.main
 flask run
 ```
 
+## run django
+```
+export PYTHONPATH=$PWD/src
+
+python src/infrastructure/web/dj/manage.py check
+```
+
 ## run console
 ```
 export PYTHONPATH=$PWD/src
