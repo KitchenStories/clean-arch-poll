@@ -21,7 +21,7 @@ flask run
 ```
 export PYTHONPATH=$PWD/src
 
-python src/infrastructure/web/dj/manage.py check
+python src/infrastructure/web/dj/manage.py runserver 0.0.0.0:8000
 ```
 
 ## run console

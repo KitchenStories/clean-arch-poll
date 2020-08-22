@@ -8,9 +8,3 @@ class BaseAdapter(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def to_entity(self): ...
-
-    @abc.abstractmethod
-    def json(self) -> str: ...
-
-    @abc.abstractmethod
-    def dict(self) -> dict: ...
