@@ -16,7 +16,7 @@ class BaseReadOnlyRepository(metaclass=abc.ABCMeta):
 
 class BaseWriteOnlyRepository(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def save(self, other: BaseEntity): ... # pragma: no cover
+    def save(self, other: BaseEntity): ...  # pragma: no cover
 
 
 class BaseRepository(BaseReadOnlyRepository, BaseWriteOnlyRepository, metaclass=abc.ABCMeta):
