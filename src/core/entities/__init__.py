@@ -6,7 +6,7 @@ from dataclasses import dataclass
 class BaseEntity(metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
-    def from_dict(cls, other: dict): ...
+    def from_dict(cls, other: dict): ...  # pragma: no cover
 
     @abc.abstractmethod
-    def dict(self): ...
+    def dict(self): ...  # pragma: no cover

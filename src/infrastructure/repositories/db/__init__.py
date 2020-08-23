@@ -11,4 +11,4 @@ class Base(declarative_base(BaseAdapter, metaclass=DeclarativeMeta)):
     __abstract__ = True
 
     @abc.abstractmethod
-    def copy_from_entity(self, other: BaseEntity): ...
+    def copy_from_entity(self, other: BaseEntity): ...  # pragma: no cover

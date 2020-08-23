@@ -5,4 +5,4 @@ from pydantic import BaseModel
 from core.adapters import BaseAdapter
 
 
-class PydanticAdapter(BaseModel, BaseAdapter, metaclass=abc.ABCMeta): ...  # noqa
+class PydanticAdapter(BaseModel, BaseAdapter, metaclass=abc.ABCMeta): ...  # noqa pragma: no cover
