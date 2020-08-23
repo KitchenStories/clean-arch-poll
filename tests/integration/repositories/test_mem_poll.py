@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-from core.entities import poll as entity
 from infrastructure.repositories.mem import poll as repo
 
 
