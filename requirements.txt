@@ -7,4 +7,5 @@ jupyter
 pytest
 pytest-coverage
 pytest-mock
+pytest-django
 flake8

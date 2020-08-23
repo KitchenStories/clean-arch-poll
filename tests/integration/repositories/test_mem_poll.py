@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from core.entities import poll as entity
 from infrastructure.repositories.mem import poll as repo
 
 
@@ -110,3 +111,12 @@ class TestMemChoiceRepo:
         resp = rep.list()
 
         assert tuple(resp) == (sent.choice1, sent.choice2)
+
+    def test_save_a(self, mocker, sent):
+        mocker.patch('infrastructure.repositories.mem.poll.repo_data.CHOICES', [])
+        rep = repo.ChoiceMemRepo()
+
+        choice = mocker.Mock(id=sent.id)
+        rep.save(choice)
+
+        assert rep.data == {str(sent.id): choice}
