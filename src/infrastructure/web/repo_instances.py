@@ -2,7 +2,7 @@ def get_mem_repo():
     from infrastructure.repositories.mem import poll as mem_repo
 
     mem_choice_repo = mem_repo.ChoiceMemRepo()
-    mem_poll_repo = mem_repo.PollMemRepo(mem_choice_repo)
+    mem_poll_repo = mem_repo.PollMemRepo()
     return mem_choice_repo, mem_poll_repo
 
 
@@ -30,4 +30,4 @@ def get_django_repo():
     return dj_choice_repo, dj_poll_repo
 
 
-choice_repo, poll_repo = get_sqlalchemy_repo()
+choice_repo, poll_repo = get_mem_repo()

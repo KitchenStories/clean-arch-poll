@@ -3,7 +3,7 @@ from typing import List
 from uuid import UUID
 
 from core.entities import poll as entity
-from infrastructure.web.dj.adapters import DjangoAdapter
+from infrastructure.repositories.dj.adapters import DjangoAdapter
 from infrastructure.web.dj.polls import models
 
 

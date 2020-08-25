@@ -3,7 +3,7 @@ from uuid import UUID
 
 from core.entities import poll as entity
 from core.repositories import BaseRepository
-from infrastructure.web.dj.adapters import poll as adapter
+from infrastructure.repositories.dj.adapters import poll as adapter
 from infrastructure.web.dj.polls import models
 
 

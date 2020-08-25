@@ -1,36 +1,61 @@
 from uuid import uuid4
+from uuid import UUID
 
 from infrastructure.repositories.mem import poll as repo
 
 
 class TestPollMemRepo:
-    def test_init(self, mocker, sent):
+    def test_init_a(self, mocker, sent):
         q_id = uuid4()
         ch_id = uuid4()
 
+        choice = {
+            'id': ch_id,
+            'name': sent.choice_name,
+            'text': sent.choice_text,
+            'votes': 99
+        }
         question = {
             'id': str(q_id),
             'name': sent.name,
             'text': sent.text,
-            'choices': [{'id': str(ch_id)}]
+            'choices': [choice]
         }
+
         mocker.patch('infrastructure.repositories.mem.poll.repo_data.QUESTIONS', [question])
+        mocker.patch('infrastructure.repositories.mem.poll.repo_data.CHOICES', [choice])
         m_question = mocker.patch(
             'infrastructure.repositories.mem.poll.entity.Question',
             return_value=sent.question
         )
-        m_choice_repo = mocker.Mock()
-        m_choice_repo.get.return_value = {'id': ch_id}
-        repo.PollMemRepo(m_choice_repo)
+        m_choice = mocker.patch(
+            'infrastructure.repositories.mem.poll.entity.Choice',
+            return_value=sent.choice
+        )
+
+        repo.PollMemRepo()
 
         exp_question = {
             'id': q_id,
             'name': sent.name,
             'text': sent.text,
-            'choices': [{'id': ch_id}]
+            'choices': [sent.choice]
         }
+        exp_choice = {
+            'id': ch_id,
+            'name': sent.choice_name,
+            'text': sent.choice_text,
+            'votes': 99
+        }
+
+        m_question.assert_called_once_with(
+            id=UUID(question['id']),
+            name=sent.name,
+            text=sent.text,
+            choices=[sent.choice]
+        )
         m_question.assert_called_once_with(**exp_question)
-        m_choice_repo.get.assert_called_once_with(str(ch_id))
+        m_choice.assert_called_once_with(**exp_choice)
 
     def test_get(self, mocker, sent):
         uid = uuid4()
@@ -38,7 +63,7 @@ class TestPollMemRepo:
             'infrastructure.repositories.mem.poll.repo_data.QUESTIONS', []
         )
 
-        rep = repo.PollMemRepo(mocker.Mock())
+        rep = repo.PollMemRepo()
         rep.data = {str(uid): sent.question}
 
         resp = rep.get(uid)
@@ -52,7 +77,7 @@ class TestPollMemRepo:
             'infrastructure.repositories.mem.poll.repo_data.QUESTIONS', []
         )
 
-        rep = repo.PollMemRepo(mocker.Mock())
+        rep = repo.PollMemRepo()
         rep.data = {str(uid): sent.question1, str(uid2): sent.question2}
 
         resp = rep.list()
@@ -64,7 +89,7 @@ class TestPollMemRepo:
         mocker.patch(
             'infrastructure.repositories.mem.poll.repo_data.QUESTIONS', []
         )
-        rep = repo.PollMemRepo(mocker.Mock())
+        rep = repo.PollMemRepo()
         repo.data = {}
 
         entity = mocker.Mock(id=uid, data={})

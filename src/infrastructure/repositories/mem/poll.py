@@ -24,8 +24,11 @@ class ChoiceMemRepo(BaseRepository):
 
 
 class PollMemRepo(BaseRepository):
-    def __init__(self, choice_repo: BaseRepository):
-        self.choice_repo = choice_repo
+    def __init__(self):
+        self.choices_lookup = {
+            str(ch['id']): ch
+            for ch in repo_data.CHOICES
+        }
 
         self.data = {
             q['id']: entity.Question(
@@ -33,7 +36,14 @@ class PollMemRepo(BaseRepository):
                 name=q.get('name'),
                 text=q.get('text'),
                 choices=[
-                    self.choice_repo.get(ch.get('id')) for ch in q.get('choices', [])
+                    entity.Choice(
+                        id=choice_dict.get('id'),
+                        name=choice_dict.get('name'),
+                        text=choice_dict.get('text'),
+                        votes=choice_dict.get('votes', 0),
+                    )
+                    for choice in q.get('choices', [])
+                    if (choice_dict := self.choices_lookup.get(str(choice.get('id'))))
                 ]
             )
             for q in repo_data.QUESTIONS
