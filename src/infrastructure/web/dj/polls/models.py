@@ -18,7 +18,7 @@ class Question(models.Model):
             name=other.name
         )
 
-    def to_entity(self):
+    def to_entity(self) -> entity.Question:
         return entity.Question(
             id=self.id,
             name=self.name,
@@ -43,7 +43,7 @@ class Choice(models.Model):
             votes=other.votes
         )
 
-    def to_entity(self):
+    def to_entity(self) -> entity.Choice:
         return entity.Choice(
             id=self.id,
             name=self.name,

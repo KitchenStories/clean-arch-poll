@@ -20,7 +20,7 @@ class ChoiceAdapter(PydanticAdapter):
             votes=entity.votes
         )
 
-    def to_entity(self):
+    def to_entity(self) -> entities.Choice:
         return entities.Choice(
             id=self.id,
             name=self.name,
@@ -44,7 +44,7 @@ class QuestionAdapter(PydanticAdapter):
             choices=[ChoiceAdapter.from_entity(ch) for ch in entity.choices]
         )
 
-    def to_entity(self):
+    def to_entity(self) -> entities.Question:
         return entities.Question(
             id=self.id,
             name=self.name,

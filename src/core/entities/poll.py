@@ -22,7 +22,7 @@ class Choice(BaseEntity):
             votes=other.get('votes', 0)
         )
 
-    def dict(self):
+    def dict(self) -> dict:
         return {
             'id': self.id,
             'name': self.name,
@@ -58,7 +58,7 @@ class Question(BaseEntity):
         choices = tuple(filter(lambda x: str(x.id) == str(uid), self.choices))
         return choices[0] if choices else None
 
-    def dict(self):
+    def dict(self) -> dict:
         return {
             'id': self.id,
             'name': self.name,

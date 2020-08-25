@@ -26,7 +26,7 @@ class Question(Base):
             choices=[Choice.from_entity(ch) for ch in other.choices]
         )
 
-    def to_entity(self):
+    def to_entity(self) -> entity.Question:
         return entity.Question(
             id=UUID(self.id),
             name=self.name,

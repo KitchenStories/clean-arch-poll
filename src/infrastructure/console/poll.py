@@ -4,7 +4,7 @@ from infrastructure.web import repo_instances
 
 
 def list_polls():
-    uc = use_cases.PollListUseCase(repo_instances.mem_poll_repo)
+    uc = use_cases.PollListUseCase(repo_instances.poll_repo)
     polls = uc.execute()
 
     print('##')

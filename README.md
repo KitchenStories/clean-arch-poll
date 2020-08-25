@@ -1,4 +1,4 @@
-# Poll - Clean archtitecture implemented in python
+# Poll - Clean architecture implemented in python
 
 # Development
 
