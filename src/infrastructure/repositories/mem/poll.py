@@ -1,3 +1,5 @@
+import abc
+
 from typing import Iterable
 from uuid import UUID
 
@@ -6,25 +8,49 @@ from core.repositories import BaseRepository
 from infrastructure.repositories.mem import data as repo_data
 
 
-class ChoiceMemRepo(BaseRepository):
+class MemBaseRepository(BaseRepository, abc.ABC):
     def __init__(self):
+        self.data = {}
+        self.add_queue = []
+        self.remove_queue = []
+
+    def get(self, uid: UUID) -> entity.BaseEntity:
+        return self.data.get(str(uid))
+
+    def list(self) -> Iterable[entity.BaseEntity]:
+        return self.data.values()
+
+    def add(self, other: entity.BaseEntity):
+        self.add_queue.append(other)
+
+    def remove(self, other: entity.BaseEntity):
+        self.remove_queue.append(other)
+
+    def commit(self):
+        for e in self.add_queue:
+            self.data[str(e.id)] = e
+
+        for e in self.remove_queue:
+            try:
+                del self.data[str(e.id)]
+            except:
+                pass
+
+
+class ChoiceMemRepo(MemBaseRepository):
+    def __init__(self):
+        super().__init__()
+
         self.data = {
             str(c['id']): entity.Choice.from_dict(c)
             for c in repo_data.CHOICES
         }
 
-    def get(self, uid: UUID) -> entity.Choice:
-        return self.data.get(str(uid))
 
-    def list(self) -> Iterable[entity.Choice]:
-        return self.data.values()
-
-    def save(self, other: entity.Choice):
-        self.data[str(other.id)] = other
-
-
-class PollMemRepo(BaseRepository):
+class PollMemRepo(MemBaseRepository):
     def __init__(self):
+        super().__init__()
+
         self.choices_lookup = {
             str(ch['id']): ch
             for ch in repo_data.CHOICES
@@ -48,12 +74,3 @@ class PollMemRepo(BaseRepository):
             )
             for q in repo_data.QUESTIONS
         }
-
-    def get(self, uid: UUID) -> entity.Question:
-        return self.data.get(str(uid))
-
-    def list(self) -> Iterable[entity.Question]:
-        return self.data.values()
-
-    def save(self, other: entity.Question):
-        self.data[str(other.id)] = other

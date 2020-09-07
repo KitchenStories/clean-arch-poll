@@ -2,6 +2,7 @@ from typing import Iterable
 from uuid import UUID
 
 from core.entities import poll as entity
+from core.entities import BaseEntity
 from core.repositories import BaseRepository
 from infrastructure.repositories.dj.adapters import poll as adapter
 from infrastructure.web.dj.polls import models
@@ -18,7 +19,7 @@ class ChoiceDJRepo(BaseRepository):
             for choice in models.Choice.objects.all()
         )
 
-    def save(self, other: entity.Choice):
+    def add(self, other: entity.Choice):
         try:  # update
             choice: models.Choice = models.Choice.objects.get(pk=other.id)
             choice.copy_from_entity(other)
@@ -28,6 +29,12 @@ class ChoiceDJRepo(BaseRepository):
         choice.save()
 
         return choice
+
+    def remove(self, other: BaseEntity):
+        pass
+
+    def commit(self):
+        pass
 
 
 class QuestionDJRepo(BaseRepository):
@@ -41,9 +48,9 @@ class QuestionDJRepo(BaseRepository):
             for question in models.Question.objects.all()
         )
 
-    def save(self, other: entity.Question):
+    def add(self, other: entity.Question):
         try:  # update
-            question: models.Choice = models.Question.objects.get(pk=other.id)
+            question: models.Question = models.Question.objects.get(pk=other.id)
             question.copy_from_entity(other)
         except models.Question.DoesNotExist:  # create
             question = models.Question.from_entity(other)
@@ -51,3 +58,9 @@ class QuestionDJRepo(BaseRepository):
         question.save()
 
         return question
+
+    def remove(self, other: BaseEntity):
+        pass
+
+    def commit(self):
+        pass

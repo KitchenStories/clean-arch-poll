@@ -6,18 +6,32 @@ from uuid import UUID
 from core.entities import BaseEntity
 
 
-class BaseReadOnlyRepository(metaclass=abc.ABCMeta):
+class ContextManagerRepository(abc.ABC):
+    @abc.abstractmethod
+    def commit(self): ...  # pragma: no cover
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        self.commit()
+
+
+class BaseReadOnlyRepository(abc.ABC):
     @abc.abstractmethod
     def get(self, uid: UUID) -> BaseEntity: ...  # pragma: no cover
 
     @abc.abstractmethod
-    def list(self) -> Iterable[BaseEntity]: ...   # pragma: no cover
+    def list(self) -> Iterable[BaseEntity]: ...  # pragma: no cover
 
 
-class BaseWriteOnlyRepository(metaclass=abc.ABCMeta):
+class BaseWriteOnlyRepository(ContextManagerRepository):
     @abc.abstractmethod
-    def save(self, other: BaseEntity): ...  # pragma: no cover
+    def add(self, other: BaseEntity): ...  # pragma: no cover
+
+    @abc.abstractmethod
+    def remove(self, other: BaseEntity): ...  # pragma: no cover
 
 
-class BaseRepository(BaseReadOnlyRepository, BaseWriteOnlyRepository, metaclass=abc.ABCMeta):
+class BaseRepository(BaseReadOnlyRepository, BaseWriteOnlyRepository, abc.ABC):
     ...  # pragma: no cover

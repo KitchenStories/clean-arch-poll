@@ -63,12 +63,12 @@ class TestPollMemRepo:
             'infrastructure.repositories.mem.poll.repo_data.QUESTIONS', []
         )
 
-        rep = repo.PollMemRepo()
-        rep.data = {str(uid): sent.question}
+        with repo.PollMemRepo() as rep:
+            rep.data = {str(uid): sent.question}
 
-        resp = rep.get(uid)
+            resp = rep.get(uid)
 
-        assert resp == sent.question
+            assert resp == sent.question
 
     def test_list(self, mocker, sent):
         uid = uuid4()
@@ -77,23 +77,26 @@ class TestPollMemRepo:
             'infrastructure.repositories.mem.poll.repo_data.QUESTIONS', []
         )
 
-        rep = repo.PollMemRepo()
-        rep.data = {str(uid): sent.question1, str(uid2): sent.question2}
+        with repo.PollMemRepo() as rep:
+            rep.data = {str(uid): sent.question1, str(uid2): sent.question2}
 
-        resp = rep.list()
+            resp = rep.list()
 
-        assert tuple(resp) == (sent.question1, sent.question2)
+            assert tuple(resp) == (sent.question1, sent.question2)
 
-    def test_save(self, mocker):
+    def test_add(self, mocker):
         uid = uuid4()
         mocker.patch(
             'infrastructure.repositories.mem.poll.repo_data.QUESTIONS', []
         )
-        rep = repo.PollMemRepo()
-        repo.data = {}
 
-        entity = mocker.Mock(id=uid, data={})
-        rep.save(entity)
+        with repo.PollMemRepo() as rep:
+            rep.data = {}
+
+            entity = mocker.Mock(id=uid, data={})
+            rep.add(entity)
+
+            assert rep.data == {}
 
         assert rep.data == {str(uid): entity}
 
@@ -117,30 +120,31 @@ class TestMemChoiceRepo:
         uid = uuid4()
         mocker.patch('infrastructure.repositories.mem.poll.repo_data.CHOICES', [])
 
-        rep = repo.ChoiceMemRepo()
-        rep.data = {str(uid): sent.choice}
+        with repo.ChoiceMemRepo() as rep:
+            rep.data = {str(uid): sent.choice}
+            resp = rep.get(uid)
 
-        resp = rep.get(uid)
-
-        assert resp == sent.choice
+            assert resp == sent.choice
 
     def test_list(self, mocker, sent):
         uid1 = uuid4()
         uid2 = uuid4()
 
         mocker.patch('infrastructure.repositories.mem.poll.repo_data.CHOICES', [])
-        rep = repo.ChoiceMemRepo()
-        rep.data = {str(uid1): sent.choice1, str(uid2): sent.choice2}
 
-        resp = rep.list()
+        with repo.ChoiceMemRepo() as rep:
+            rep.data = {str(uid1): sent.choice1, str(uid2): sent.choice2}
 
-        assert tuple(resp) == (sent.choice1, sent.choice2)
+            resp = rep.list()
 
-    def test_save_a(self, mocker, sent):
+            assert tuple(resp) == (sent.choice1, sent.choice2)
+
+    def test_add(self, mocker, sent):
         mocker.patch('infrastructure.repositories.mem.poll.repo_data.CHOICES', [])
-        rep = repo.ChoiceMemRepo()
 
-        choice = mocker.Mock(id=sent.id)
-        rep.save(choice)
+        with repo.ChoiceMemRepo() as rep:
+            choice = mocker.Mock(id=sent.id)
+            rep.add(choice)
+            assert rep.data == {}
 
         assert rep.data == {str(sent.id): choice}

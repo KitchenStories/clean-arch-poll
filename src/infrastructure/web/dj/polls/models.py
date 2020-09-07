@@ -26,6 +26,10 @@ class Question(models.Model):
             choices=[ch.to_entity() for ch in self.choices.all()]
         )
 
+    def copy_from_entity(self, other: entity.Question):
+        self.name = other.name
+        self.text = other.text
+
 
 class Choice(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)

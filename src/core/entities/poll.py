@@ -1,16 +1,18 @@
+import uuid
+
 from dataclasses import dataclass
+from dataclasses import field
 
 from typing import List
-from uuid import UUID
 
 from core.entities import BaseEntity
 
 
 @dataclass
 class Choice(BaseEntity):
-    id: UUID
     name: str
     text: str
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
     votes: int = 0
 
     @classmethod
@@ -36,10 +38,10 @@ class Choice(BaseEntity):
 
 @dataclass
 class Question(BaseEntity):
-    id: UUID
     name: str
     text: str
-    choices: List[Choice]
+    choices: List[Choice] = field(default_factory=list)
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
 
     @classmethod
     def from_dict(cls, other: dict):
@@ -54,7 +56,7 @@ class Question(BaseEntity):
             ]
         )
 
-    def get_choice_by_id(self, uid: UUID):
+    def get_choice_by_id(self, uid: uuid.UUID):
         choices = tuple(filter(lambda x: str(x.id) == str(uid), self.choices))
         return choices[0] if choices else None
 

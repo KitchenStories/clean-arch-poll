@@ -2,6 +2,7 @@ from typing import Iterable
 from uuid import UUID
 
 from core.entities import poll as entities
+from core.repositories import BaseReadOnlyRepository
 from core.repositories import BaseRepository
 from core.use_cases import BaseUseCase
 
@@ -13,13 +14,14 @@ class PollAddUseCase(BaseUseCase):
         self.repo = repo
 
     def execute(self, other: entities.Question):
-        self.repo.save(other)
+        with self.repo as repo:
+            repo.add(other)
 
 
 class PollGetUseCase(BaseUseCase):
-    repo: BaseRepository
+    repo: BaseReadOnlyRepository
 
-    def __init__(self, repo: BaseRepository):
+    def __init__(self, repo: BaseReadOnlyRepository):
         self.repo = repo
 
     def execute(self, question_id: UUID) -> entities.Question:
@@ -27,9 +29,9 @@ class PollGetUseCase(BaseUseCase):
 
 
 class PollListUseCase(BaseUseCase):
-    repo: BaseRepository
+    repo: BaseReadOnlyRepository
 
-    def __init__(self, repo: BaseRepository):
+    def __init__(self, repo: BaseReadOnlyRepository):
         self.repo = repo
 
     def execute(self) -> Iterable[entities.Question]:
@@ -45,5 +47,7 @@ class PollVoteUseCase(BaseUseCase):
     def execute(self, choice_id: UUID) -> entities.Choice:
         choice: entities.Choice = self.repo.get(choice_id)
         choice.vote()
-        self.repo.save(choice)
+
+        with self.repo as repo:
+            repo.add(choice)
         return choice

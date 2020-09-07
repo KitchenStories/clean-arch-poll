@@ -1,3 +1,5 @@
+import abc
+
 from typing import Iterable
 from uuid import UUID
 
@@ -8,20 +10,29 @@ from core.entities import poll as entity
 from infrastructure.repositories.db import models as db
 
 
-class PollPSQLRepo(BaseRepository):
+class BaseSQLRepo(BaseRepository, abc.ABC):
     def __init__(self, session):
         self.session = session
 
-    def get(self, uid: UUID) -> entity.Question:
+    def commit(self):
+        self.session.commit()
+
+
+class PollPSQLRepo(BaseSQLRepo):
+    def first_by_id(self, uid: UUID, with_choices=True) -> db.Question:
         query = self.session.query(db.Question)
-        query = query.options(
-            joinedload(db.Question.choices)
-        )
+        if with_choices:
+            query = query.options(
+                joinedload(db.Question.choices)
+            )
         query = query.filter(db.Question.id == str(uid))
 
         question: db.Question = query.first()
+        return question
 
-        return question.to_entity() if question else None
+    def get(self, uid: UUID) -> entity.Question:
+        choice = self.first_by_id(uid)
+        return choice.to_entity() if choice else None
 
     def list(self) -> Iterable[entity.Question]:
         query = self.session.query(db.Question)
@@ -31,16 +42,16 @@ class PollPSQLRepo(BaseRepository):
 
         return (question.to_entity() for question in query.all())
 
-    def save(self, other: entity.Question):
+    def add(self, other: entity.Question):
         question = db.Question.from_entity(other)
         self.session.add(question)
-        self.session.commit()
+
+    def remove(self, other: entity.Question):
+        if question := self.first_by_id(other.id, with_choices=False):
+            self.session.delete(question)
 
 
-class ChoicePSQLRepo(BaseRepository):
-    def __init__(self, session):
-        self.session = session
-
+class ChoicePSQLRepo(BaseSQLRepo):
     def first_by_id(self, uid: UUID) -> db.Choice:
         query = self.session.query(db.Choice)
         query = query.filter(db.Choice.id == str(uid))
@@ -55,11 +66,15 @@ class ChoicePSQLRepo(BaseRepository):
         query = self.session.query(db.Choice)
         return (ch.to_entity() for ch in query.all())
 
-    def save(self, other: entity.Choice):
+    def add(self, other: entity.Choice):
         if choice := self.first_by_id(other.id):
             choice.copy_from_entity(other)
         else:
             choice = db.Choice.from_entity(other)
 
         self.session.add(choice)
-        self.session.commit()
+
+    def remove(self, other: entity.Choice):
+        if choice := self.first_by_id(other.id):
+            choice.copy_from_entity(other)
+            self.session.delete(choice)
